@@ -1,0 +1,45 @@
+services:
+  chromadb:
+    image: chromadb/chroma
+    ports:
+      - 3003:8000
+    container_name: chromadb
+    networks:
+      - net
+
+  init:
+    build:
+      context: ./vectordb
+      dockerfile: ./Dockerfile
+    container_name: init-data
+    depends_on:
+      chromadb:
+        condition: service_started
+    environment:
+      - CHROMADB_HOST=chromadb
+      - CHROMADB_PORT=8000
+    networks:
+      - net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    container_name: backend
+    ports:
+      - 8000:8000
+    depends_on:
+      init:
+        condition: service_completed_successfully
+      chromadb:
+        condition: service_started
+    environment:
+      - CHROMADB_HOST=chromadb
+      - CHROMADB_PORT=8000
+      - CHROMADB_COLLECTION_NAME=annuaire_statistique
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge
