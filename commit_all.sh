@@ -6,15 +6,25 @@ submodules=( "vectordb" "backend" "frontend" )
 # Parcourir chaque sous-module
 for submodule in "${submodules[@]}"
 do
-  echo "Committing changes in $submodule"
-  cd $submodule
-  git add .
-  git commit -m "Automatic commit for $submodule"
-  git push origin main
-  cd ..
+	# test le statut du sous-module (si des changements ont été effectués)
+	cd $submodule
+	if [ -z "$(git status --porcelain)" ]; then
+		echo "No changes in $submodule"
+	else
+		echo "Committing changes in $submodule"
+		git add .
+		git commit -m "Automatic commit for $submodule"
+		git push origin main
+	fi
+	cd ..
 done
 
 # Mettre à jour la référence des sous-modules dans le dépôt principal
-git add .
-git commit -m "Mise à jour des sous-modules"
-git push origin main
+if [ -z "$(git status --porcelain)" ]; then
+	echo "No changes in main repository"
+else
+	echo "Committing changes in main repository"
+	git add .
+	git commit -m "Automatic commit for main repository"
+	git push origin main
+fi
