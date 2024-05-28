@@ -1,12 +1,17 @@
 #!/bin/bash
 
-# Liste des sous-modules
-submodules=( "vectordb" "backend" "frontend" )
+# Function to read submodule paths from .gitmodules using awk
+get_submodules() {
+    awk -F ' = ' '/path = / {print $2}' .gitmodules
+}
+
+# Get the list of submodules
+submodules=($(get_submodules))
 
 # Demander à l'utilisateur s'il veut utiliser un sous-module spécifique ou le répertoire courant
-read -p "Voulez-vous commiter les changements dans un sous-module spécifique ou le répertoire courant? (submodule/current): " choice
+read -p "Voulez-vous commiter les changements dans un sous-module spécifique ou le répertoire courant? (submodules/current): " choice
 
-if [ "$choice" == "submodule" ]; then
+if [ "$choice" == "submodules" ]; then
     read -p "Entrez le nom du sous-module: " specific_submodule
     if [[ " ${submodules[@]} " =~ " ${specific_submodule} " ]]; then
         submodules=("$specific_submodule")
