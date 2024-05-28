@@ -29,6 +29,14 @@ fi
 # Demander à l'utilisateur d'entrer un message de commit
 read -p "Entrez un message de commit: " commit_message
 
+if [ -z "$commit_message" ]; then
+    if [ "$choice" == "submodules" ]; then
+        echo "Message de commit invalide. Veuillez entrer un message de commit."
+        exit 1
+    else
+        commit_message="Update submodules"
+    fi
+fi
 # Parcourir chaque sous-module
 for submodule in "${submodules[@]}"
 do
