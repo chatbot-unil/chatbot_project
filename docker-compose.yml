@@ -18,6 +18,7 @@ services:
     environment:
       - CHROMADB_HOST=chromadb
       - CHROMADB_PORT=8000
+      - LOGGING_LEVEL=DEBUG
     networks:
       - net
 
@@ -36,7 +37,7 @@ services:
     environment:
       - CHROMADB_HOST=chromadb
       - CHROMADB_PORT=8000
-      - CHROMADB_COLLECTION_NAME=annuaire_statistique
+      - CHROMADB_COLLECTION_NAME=students_autumn
     networks:
       - net
 
