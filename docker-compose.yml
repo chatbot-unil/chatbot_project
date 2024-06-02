@@ -19,6 +19,7 @@ services:
       - CHROMADB_HOST=chromadb
       - CHROMADB_PORT=8000
       - LOGGING_LEVEL=DEBUG
+      - CONFIG_PATH=config.json
     networks:
       - net
 
@@ -35,9 +36,11 @@ services:
       chromadb:
         condition: service_started
     environment:
-      - CHROMADB_HOST=chromadb
+      - BOT_INIT_MESSAGE="Bonjour, je suis le chatbot de l'Université de Lausanne. Comment puis-je vous aider ?"
       - CHROMADB_PORT=8000
+      - CHROMADB_HOST=chromadb
       - CHROMADB_COLLECTION_NAME=students_autumn
+      - USE_STREAM=true
     networks:
       - net
 
