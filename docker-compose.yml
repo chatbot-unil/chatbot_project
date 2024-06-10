@@ -1,65 +1,33 @@
 services:
   chromadb:
-    image: chromadb/chroma
-    ports:
-      - 3003:8000
-    container_name: chromadb
-    networks:
-      - net
+    extends:
+      file: ./vectordb/docker-compose.yml
+      service: chromadb
 
   init:
-    build:
-      context: ./vectordb
-      dockerfile: ./Dockerfile
-    container_name: init-data
-    depends_on:
-      chromadb:
-        condition: service_started
-    environment:
-      - CHROMADB_HOST=chromadb
-      - CHROMADB_PORT=8000
-      - LOGGING_LEVEL=DEBUG
-      - CONFIG_PATH=config.json
-    networks:
-      - net
+    extends:
+      file: ./vectordb/docker-compose.yml
+      service: init
+
+  postgres:
+    extends:
+      file: ./postgres/docker-compose.yml
+      service: postgres
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: ./Dockerfile
-    container_name: backend
-    ports:
-      - 8000:8000
-    depends_on:
-      init:
-        condition: service_completed_successfully
-      chromadb:
-        condition: service_started
-    environment:
-      - BOT_INIT_MESSAGE=Bonjour, je suis le chatbot de l'Université de Lausanne. Comment puis-je vous aider ?
-      - CHROMADB_PORT=8000
-      - CHROMADB_HOST=chromadb
-      - CHROMADB_COLLECTION_NAME=students_autumn
-      - USE_STREAM=True
-    networks:
-      - net
+    extends:
+      file: ./backend/docker-compose.yml
+      service: backend
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: ./Dockerfile
-    container_name: frontend
-    # i use Nginx as a web server
-    ports:
-      - 80:80
-    depends_on:
-      backend:
-        condition: service_started
-    environment:
-      - REACT_APP_BACKEND_HOST=backend
-      - REACT_APP_BACKEND_PORT=8000
-    networks:
-      - net
+    extends:
+      file: ./frontend/docker-compose.yml
+      service: frontend
+
+  ngrok:
+    extends:
+      file: ./frontend/docker-compose.yml
+      service: ngrok
 
 networks:
   net:

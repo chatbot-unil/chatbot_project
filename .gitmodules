@@ -7,3 +7,6 @@
 [submodule "vectordb"]
 	path = vectordb
 	url = git@github.com:chatbot-unil/chatbot_vector_db.git
+[submodule "postgres"]
+	path = postgres
+	url = git@github.com:chatbot-unil/chatbot_database.git
