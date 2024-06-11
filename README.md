@@ -12,10 +12,16 @@ Le projet est composé de trois parties : le frontend, le backend et la base de 
 
 Le projet est composé de trois parties : le frontend, le backend et la base de données vectorisée. Pour installer le projet, il suffit de suivre les instructions de chaque partie.
 
+Pour récupérer tous les sous-modules, il suffit de faire :
+
+```bash
+git submodule update --init --recursive
+```
+
 ## Utilisation
 
 Le projet est composé de trois parties : le frontend, le backend et la base de données vectorisée. Pour tout lancer il suffit de faire : 
 
 ```bash
-docker-compose up
+docker-compose up --build
 ```
