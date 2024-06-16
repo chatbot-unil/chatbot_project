@@ -14,6 +14,7 @@ provider "openstack" {
   password    = var.os_password
   auth_url    = var.os_auth_url
   region      = var.os_region_name
+  domain_name = var.os_domain_name
 }
 
 resource "openstack_networking_secgroup_v2" "chatbot_security_group" {

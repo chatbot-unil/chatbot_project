@@ -3,6 +3,11 @@ variable "os_user_name" {
   type        = string
 }
 
+variable "os_domain_name" {
+  description = "The OpenStack domain name."
+  type        = string
+}
+
 variable "os_tenant_name" {
   description = "The OpenStack tenant name."
   type        = string
