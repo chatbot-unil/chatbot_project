@@ -24,7 +24,7 @@ jobs:
         OS_USERNAME: ${{ secrets.OS_USERNAME }}
         OS_PASSWORD: ${{ secrets.OS_PASSWORD }}
         OS_REGION_NAME: ${{ secrets.OS_REGION_NAME }}
-        OS_PROJECT_NAME: ${{ secrets.OS_PROJECT_NAME }}
+        OS_TENANT_NAME: ${{ secrets.OS_PROJECT_NAME }}
         OS_USER_DOMAIN_NAME: ${{ secrets.OS_USER_DOMAIN_NAME }}
       run: terraform init
       working-directory: terraform
@@ -35,7 +35,7 @@ jobs:
         OS_USERNAME: ${{ secrets.OS_USERNAME }}
         OS_PASSWORD: ${{ secrets.OS_PASSWORD }}
         OS_REGION_NAME: ${{ secrets.OS_REGION_NAME }}
-        OS_PROJECT_NAME: ${{ secrets.OS_PROJECT_NAME }}
+        OS_TENANT_NAME: ${{ secrets.OS_PROJECT_NAME }}
         OS_USER_DOMAIN_NAME: ${{ secrets.OS_USER_DOMAIN_NAME }}
         TF_VAR_name: "chatbot-instance"
         TF_VAR_public_key: ${{ secrets.PUBLIC_KEY }}
