@@ -31,7 +31,7 @@
 
         - name: Add Docker repository
           ansible.builtin.apt_repository:
-            repo: deb [arch=amd64] https://download.docker.com/linux/debian bullseye stable
+            repo: deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable
             state: present
 
     - name: Install Docker Engine
@@ -39,9 +39,14 @@
         name:
           - docker-ce
           - docker-ce-cli
-          - docker-compose
           - containerd.io
         state: present
+
+    - name: Download Docker Compose binary
+      get_url:
+        url: https://github.com/docker/compose/releases/download/v2.27.1/docker-compose-linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
 
     - name: Add user to the docker group
       ansible.builtin.user:

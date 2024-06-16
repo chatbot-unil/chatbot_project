@@ -60,12 +60,6 @@ jobs:
       run: |
         echo "INSTANCE_IP=$(terraform output -raw instance_ip)" >> $GITHUB_ENV
       working-directory: terraform
-    
-    - name: Setup SSH Key
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-        chmod 600 ~/.ssh/id_ed25519
 
     - name: Add instance IP to inventory
       run: |
