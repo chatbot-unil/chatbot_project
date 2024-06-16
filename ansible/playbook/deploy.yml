@@ -31,7 +31,7 @@
 
         - name: Add Docker repository
           ansible.builtin.apt_repository:
-            repo: deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable
+            repo: deb [arch=amd64] https://download.docker.com/linux/debian bullseye stable
             state: present
 
     - name: Install Docker Engine
