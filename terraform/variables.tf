@@ -50,11 +50,6 @@ variable "network_name" {
   default     = "ext-net1"
 }
 
-variable "key_pair" {
-  description = "The name of the key pair to use for the instance"
-  default     = "chatbot-key"
-}
-
 variable "username" {
   description = "The name of the user to use for SSH"
   default     = "ubuntu"

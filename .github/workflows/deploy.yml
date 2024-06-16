@@ -17,8 +17,6 @@ jobs:
 
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: 1.0.0
       
     - name: Terraform Init
       env:
@@ -35,11 +33,6 @@ jobs:
         TF_VAR_os_user_name: ${{ secrets.OS_USERNAME }}
         TF_VAR_os_password: ${{ secrets.OS_PASSWORD }}
         TF_VAR_os_region_name: ${{ secrets.OS_REGION_NAME }}
-        TF_VAR_image_id: ${{ secrets.IMAGE_ID }}
-        TF_VAR_flavor_id: ${{ secrets.FLAVOR_ID }}
-        TF_VAR_key_pair: ${{ secrets.KEY_PAIR }}
-        TF_VAR_security_group: ${{ secrets.SECURITY_GROUP }}
-        TF_VAR_network_id: ${{ secrets.NETWORK_ID }}
         TF_VAR_name: "chatbot-instance"
         TF_VAR_public_key: ${{ secrets.PUBLIC_KEY }}
       run: terraform apply -auto-approve
