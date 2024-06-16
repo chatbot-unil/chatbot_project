@@ -11,7 +11,6 @@ variable "os_user_domain_name" {
 variable "os_tenant_name" {
   description = "The OpenStack tenant name."
   type        = string
-  default = ""
 }
 
 variable "os_password" {
