@@ -121,7 +121,7 @@ jobs:
         TF_VAR_os_region_name: ${{ secrets.OS_REGION_NAME }}
         TF_VAR_os_tenant_name: ${{ secrets.OS_PROJECT_NAME }}
         TF_VAR_os_user_domain_name: ${{ secrets.OS_USER_DOMAIN_NAME }}
-        TF_VAR_name: ${{ secrets.INSTANCE_NAME }}
+        TF_VAR_name: "chatbot-instance"
         TF_VAR_public_key: ${{ secrets.PUBLIC_KEY }}
       run: terraform apply -auto-approve
       working-directory: terraform
@@ -201,7 +201,7 @@ jobs:
         TF_VAR_os_region_name: ${{ secrets.OS_REGION_NAME }}
         TF_VAR_os_tenant_name: ${{ secrets.OS_PROJECT_NAME }}
         TF_VAR_os_user_domain_name: ${{ secrets.OS_USER_DOMAIN_NAME }}
-        TF_VAR_name: ${{ secrets.INSTANCE_NAME }}
+        TF_VAR_name: "chatbot-instance"
         TF_VAR_public_key: ${{ secrets.PUBLIC_KEY }}
       run: terraform destroy -auto-approve
       working-directory: terraform
