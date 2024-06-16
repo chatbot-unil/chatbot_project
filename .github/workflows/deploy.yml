@@ -8,7 +8,7 @@ on:
     inputs:
       destroy:
         description: 'Destroy infrastructure after deployment'
-        required: false
+        required: true
         default: false
         type: boolean
 

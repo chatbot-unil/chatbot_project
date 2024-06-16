@@ -1,22 +1,15 @@
 #cloud-config
+---
+groups:
+  - debian: [root, sys]
+  - terraform
+
 users:
   - default
   - name: ${user}
+    gecos: terraform
+    primary_group: terraform
+    groups: users, admin
+    sudo: ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:
       - ${ssh_key}
-    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
-    groups: sudo
-    shell: /bin/bash
-
-package_update: true
-package_upgrade: true
-packages:
-  - docker.io
-  - docker-compose
-
-runcmd:
-  - usermod -aG docker ${user}
-  - systemctl enable docker
-  - systemctl start docker
-  - docker --version
-  - docker-compose --version
