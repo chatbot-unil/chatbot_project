@@ -58,22 +58,22 @@
     - name: Copy backend dir to remote
       ansible.builtin.copy:
         src: ../../backend
-        dest: /home/ubuntu/backend
+        dest: /home/ubuntu/
       
     - name: Copy frontend dir to remote
       ansible.builtin.copy:
         src: ../../frontend
-        dest: /home/ubuntu/frontend
+        dest: /home/ubuntu/
 
     - name: Copy vectordb dir to remote
       ansible.builtin.copy:
         src: ../../vectordb
-        dest: /home/ubuntu/vectordb
+        dest: /home/ubuntu/
 
     - name: Copy postgres dir to remote
       ansible.builtin.copy:
         src: ../../postgres
-        dest: /home/ubuntu/postgres
+        dest: /home/ubuntu/
 
     - name: Copy Docker Compose file
       ansible.builtin.copy:
