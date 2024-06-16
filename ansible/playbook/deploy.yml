@@ -100,9 +100,6 @@
           BOT_INIT_MESSAGE=Bonjour, je suis le chatbot de l'Université de Lausanne. Comment puis-je vous aider ?
         dest: /home/ubuntu/.env
 
-    - name: Source environment file
-      ansible.builtin.shell: source /home/ubuntu/.env
-
     - name: Deploy services with Docker Compose
       ansible.builtin.shell: docker-compose -f /home/ubuntu/docker-compose.yml up -d
       args:
