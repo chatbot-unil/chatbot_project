@@ -3,7 +3,7 @@ variable "os_user_name" {
   type        = string
 }
 
-variable "os_domain_name" {
+variable "os_user_domain_name" {
   description = "The OpenStack domain name."
   type        = string
 }
