@@ -26,12 +26,12 @@
 
         - name: Add Docker GPG apt Key
           ansible.builtin.apt_key:
-            url: https://download.docker.com/linux/debian/gpg
+            url: https://download.docker.com/linux/ubuntu/gpg
             state: present
 
         - name: Add Docker repository
           ansible.builtin.apt_repository:
-            repo: deb [arch=amd64] https://download.docker.com/linux/debian bullseye stable
+            repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
             state: present
 
     - name: Install Docker Engine
@@ -88,7 +88,7 @@
     - name: Create .env file for frontend
       ansible.builtin.copy:
         content: |
-          REACT_APP_BACKEND_HOST=localhost
+          REACT_APP_BACKEND_HOST={{ public_ip }}
           REACT_APP_BACKEND_PORT=3001
         dest: /home/ubuntu/frontend/.env
     

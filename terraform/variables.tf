@@ -36,12 +36,16 @@ variable "name" {
 
 variable "image_id" {
   description = "The ID of the image to use for the instance"
-  default     = "a2438706-bf58-49a1-aa18-fe91037387c4"
+#   default     = "a6b1aabf-c9e0-4506-a5f7-b3884bf32903" # Debian 10
+  default	 = "a8cbc080-d83d-4817-8bbb-e61f37f2c28e" # Ubuntu 22.04 LTS Jammy Jellyfish
 }
 
 variable "flavor_id" {
   description = "The ID of the flavor to use for the instance"
-  default     = "b6b7baeb-2328-48c9-8543-88cccec8ec4b"
+#   default     = "b6b7baeb-2328-48c9-8543-88cccec8ec4b" # = 2 vCPU, 4GB RAM, 20GB Disk
+  default	 = "67012020-b4cf-4b34-a91d-c55ae68c48cb" # = 4 vCPU, 16GB RAM, 20GB Disk
+  # 67012020-b4cf-4b34-a91d-c55ae68c48cb = 4 vCPU, 16GB RAM, 20GB Disk
+  # e1fefc6e-5c1c-4cae-9a18-d4606bc7d431 = 4 vCPU, 16GB RAM, 50GB Disk
 }
 
 variable "network_id" {
