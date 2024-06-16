@@ -3,32 +3,80 @@ services:
     extends:
       file: ./vectordb/docker-compose.yml
       service: chromadb
+    environment:
+      - CHROMA_HOST_ADDR=0.0.0.0
+      - CHROMA_HOST_PORT=3003
+    networks:
+      - chatbot-network
+    
+  postgres:
+    extends:
+      file: ./postgres/docker-compose.yml
+      service: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - chatbot-network
+
 
   init:
     extends:
       file: ./vectordb/docker-compose.yml
       service: init
-
-  postgres:
-    extends:
-      file: ./postgres/docker-compose.yml
-      service: postgres
+    environment:
+      - CHROMADB_HOST=chromadb
+      - CHROMADB_PORT=3003
+      - LOGGING_LEVEL=INFO
+      - CONFIG_PATH=config.json
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+    networks:
+      - chatbot-network
 
   backend:
     extends:
       file: ./backend/docker-compose.yml
       service: backend
+    environment:
+      - BOT_INIT_MESSAGE=Bonjour, je suis le chatbot de l'Université de Lausanne. Comment puis-je vous aider ?
+      - CHROMADB_PORT=3003
+      - CHROMADB_HOST=chromadb
+      - USE_STREAM=True
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - PUBLIC_IP=${PUBLIC_IP}
+    networks:
+      - chatbot-network
 
   frontend:
     extends:
       file: ./frontend/docker-compose.yml
       service: frontend
+    env_file:
+      - ./frontend/.env
+    networks:
+      - chatbot-network
 
   ngrok:
     extends:
       file: ./frontend/docker-compose.yml
       service: ngrok
-
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTH_TOKEN}
+    networks:
+      - chatbot-network
+    
 networks:
-  net:
+  chatbot-network:
     driver: bridge
+

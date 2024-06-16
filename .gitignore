@@ -1,3 +1,6 @@
 .DS_Store
 ngrok.yml
 .env
+.keys/*
+PCP-GYRFT72 openrc.sh
+.vscode/*

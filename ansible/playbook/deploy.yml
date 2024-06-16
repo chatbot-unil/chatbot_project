@@ -1,0 +1,109 @@
+---
+- name: Deploy chatbot app on Infomaniak Cloud
+  hosts: app
+  become: true
+
+  tasks:
+    - name: Install Docker
+      block:
+        - name: Add Docker's official GPG key
+          block:
+            - name: Update apt cache
+              ansible.builtin.apt:
+                update_cache: true
+
+            - name: Install necessary packages
+              ansible.builtin.apt:
+                name:
+                  - apt-transport-https
+                  - ca-certificates
+                  - curl
+                  - gnupg
+                  - lsb-release
+                  - software-properties-common
+                state: latest
+                update_cache: yes
+
+        - name: Add Docker GPG apt Key
+          ansible.builtin.apt_key:
+            url: https://download.docker.com/linux/debian/gpg
+            state: present
+
+        - name: Add Docker repository
+          ansible.builtin.apt_repository:
+            repo: deb [arch=amd64] https://download.docker.com/linux/debian bullseye stable
+            state: present
+
+    - name: Install Docker Engine
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - docker-compose
+          - containerd.io
+        state: present
+
+    - name: Add user to the docker group
+      ansible.builtin.user:
+        name: ubuntu
+        groups: docker
+        append: yes
+
+    - name: Start Docker service
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: yes
+      
+    - name: Copy backend dir to remote
+      ansible.builtin.copy:
+        src: ../../backend
+        dest: /home/ubuntu/backend
+      
+    - name: Copy frontend dir to remote
+      ansible.builtin.copy:
+        src: ../../frontend
+        dest: /home/ubuntu/frontend
+
+    - name: Copy vectordb dir to remote
+      ansible.builtin.copy:
+        src: ../../vectordb
+        dest: /home/ubuntu/vectordb
+
+    - name: Copy postgres dir to remote
+      ansible.builtin.copy:
+        src: ../../postgres
+        dest: /home/ubuntu/postgres
+
+    - name: Copy Docker Compose file
+      ansible.builtin.copy:
+        src: ../../docker-compose.yml
+        dest: /home/ubuntu/docker-compose.yml
+
+    - name: Create .env file for frontend
+      ansible.builtin.copy:
+        content: |
+          REACT_APP_BACKEND_HOST=localhost
+          REACT_APP_BACKEND_PORT=3001
+        dest: /home/ubuntu/frontend/.env
+    
+    - name: Create environment file
+      ansible.builtin.copy:
+        content: |
+          OPENAI_API_KEY={{ openai_api_key }}
+          POSTGRES_USER={{ postgres_user }}
+          POSTGRES_PASSWORD={{ postgres_password }}
+          POSTGRES_DB={{ postgres_db }}
+          NGROK_AUTH_TOKEN={{ ngrok_auth_token }}
+          PUBLIC_IP={{ public_ip }}
+          USE_STREAM=True
+          BOT_INIT_MESSAGE=Bonjour, je suis le chatbot de l'Université de Lausanne. Comment puis-je vous aider ?
+        dest: /home/ubuntu/.env
+
+    - name: Source environment file
+      ansible.builtin.shell: source /home/ubuntu/.env
+
+    - name: Deploy services with Docker Compose
+      ansible.builtin.shell: docker-compose -f /home/ubuntu/docker-compose.yml up -d
+      args:
+        chdir: /home/ubuntu

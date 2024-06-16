@@ -1,0 +1,97 @@
+name: Deploy to Infomaniak Cloud
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.0.0
+      
+    - name: Terraform fmt
+      id: fmt
+      run: terraform fmt -check
+      continue-on-error: true
+      working-directory: terraform
+    
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate -no-color
+      continue-on-error: true
+      working-directory: terraform
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -no-color
+      continue-on-error: true
+      working-directory: terraform
+
+    - name: Terraform Init
+      env:
+        TF_VAR_auth_url: ${{ secrets.OS_AUTH_URL }}
+        TF_VAR_username: ${{ secrets.OS_USERNAME }}
+        TF_VAR_password: ${{ secrets.OS_PASSWORD }}
+        TF_VAR_project_name: ${{ secrets.OS_PROJECT_NAME }}
+        TF_VAR_user_domain_name: ${{ secrets.OS_USER_DOMAIN_NAME }}
+        TF_VAR_region_name: ${{ secrets.OS_REGION_NAME }}
+      run: terraform init
+      working-directory: terraform
+
+    - name: Terraform Apply
+      env:
+        TF_VAR_auth_url: ${{ secrets.OS_AUTH_URL }}
+        TF_VAR_username: ${{ secrets.OS_USERNAME }}
+        TF_VAR_password: ${{ secrets.OS_PASSWORD }}
+        TF_VAR_project_name: ${{ secrets.OS_PROJECT_NAME }}
+        TF_VAR_user_domain_name: ${{ secrets.OS_USER_DOMAIN_NAME }}
+        TF_VAR_region_name: ${{ secrets.OS_REGION_NAME }}
+        TF_VAR_image_id: ${{ secrets.IMAGE_ID }}
+        TF_VAR_flavor_id: ${{ secrets.FLAVOR_ID }}
+        TF_VAR_key_pair: ${{ secrets.KEY_PAIR }}
+        TF_VAR_security_group: ${{ secrets.SECURITY_GROUP }}
+        TF_VAR_network_id: ${{ secrets.NETWORK_ID }}
+        TF_VAR_name: "chatbot-instance"
+        TF_VAR_public_key: ${{ secrets.PUBLIC_KEY }}
+      run: terraform apply -auto-approve
+      working-directory: terraform
+
+    - name: Save Terraform State
+      uses: actions/upload-artifact@v4
+      with:
+        name: terraform-state
+        path: terraform/terraform.tfstate
+
+    - name: Save Instance IP
+      id: save_ip
+      run: echo "INSTANCE_IP=$(terraform output -raw instance_ip)" >> $GITHUB_ENV
+      working-directory: terraform
+
+    - name: Add instance IP to inventory
+      run: |
+        echo "[app]" > ansible/inventory.ini
+        echo "${{ env.INSTANCE_IP }} ansible_user=ubuntu" >> ansible/inventory.ini
+
+    - name: Install Ansible
+      run: sudo apt-get update && sudo apt-get install -y ansible
+
+    - name: Run Ansible Playbook
+      uses: dawidd6/action-ansible-playbook@v2
+      with:
+        playbook: ansible/playbook/deploy.yml
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        inventory: |
+          [app]
+          ${{ env.INSTANCE_IP }} ansible_user=ubuntu
+        options: --extra-vars "openai_api_key=${{ secrets.OPENAI_API_KEY }} postgres_user=${{ secrets.POSTGRES_USER }} postgres_password=${{ secrets.POSTGRES_PASSWORD }} postgres_db=${{ secrets.POSTGRES_DB }} ngrok_auth_token=${{ secrets.NGROK_AUTH_TOKEN }} public_ip=${{ env.INSTANCE_IP }}"
