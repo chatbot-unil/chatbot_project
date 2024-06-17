@@ -133,7 +133,7 @@ on:
     inputs:
       action:
         description: 'Choose action: build-and-deploy or destroy'
-        required: true
+        required: false
         default: build-and-deploy
         type: choice
         options:
