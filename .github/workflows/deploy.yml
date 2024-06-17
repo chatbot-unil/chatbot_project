@@ -1,127 +1,3 @@
-# name: Deploy and Manage Infomaniak Cloud Infrastructure
-
-# on:
-#   push:
-#     branches:
-#       - main
-#   workflow_dispatch:
-#     inputs:
-#       destroy:
-#         description: 'Destroy infrastructure after deployment'
-#         required: true
-#         default: false
-#         type: boolean
-
-# jobs:
-#   build-and-deploy:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v2
-#       with:
-#         submodules: recursive
-
-#     - name: Set up Terraform
-#       uses: hashicorp/setup-terraform@v3
-
-#     - name: Terraform Init
-#       env:
-#         TF_VAR_os_auth_url: ${{ secrets.OS_AUTH_URL }}
-#         TF_VAR_os_user_name: ${{ secrets.OS_USERNAME }}
-#         TF_VAR_os_password: ${{ secrets.OS_PASSWORD }}
-#         TF_VAR_os_region_name: ${{ secrets.OS_REGION_NAME }}
-#         TF_VAR_os_tenant_name: ${{ secrets.OS_PROJECT_NAME }}
-#         TF_VAR_os_user_domain_name: ${{ secrets.OS_USER_DOMAIN_NAME }}
-#       run: terraform init
-#       working-directory: terraform
-
-#     - name: Terraform Apply
-#       env:
-#         TF_VAR_os_auth_url: ${{ secrets.OS_AUTH_URL }}
-#         TF_VAR_os_user_name: ${{ secrets.OS_USERNAME }}
-#         TF_VAR_os_password: ${{ secrets.OS_PASSWORD }}
-#         TF_VAR_os_region_name: ${{ secrets.OS_REGION_NAME }}
-#         TF_VAR_os_tenant_name: ${{ secrets.OS_PROJECT_NAME }}
-#         TF_VAR_os_user_domain_name: ${{ secrets.OS_USER_DOMAIN_NAME }}
-#         TF_VAR_name: "chatbot-instance"
-#         TF_VAR_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
-#       run: terraform apply -auto-approve
-#       working-directory: terraform
-
-#     - name: Save Terraform State
-#       uses: actions/upload-artifact@v2
-#       with:
-#         name: terraform-state
-#         path: terraform/terraform.tfstate
-
-#     - name: Save Instance IP
-#       id: save_ip
-#       run: |
-#         echo "INSTANCE_IP=$(terraform output -raw instance_ip)" >> $GITHUB_ENV
-#       working-directory: terraform
-
-#     - name: Add instance IP to inventory
-#       run: |
-#         echo "[app]" > ansible/inventory.ini
-#         echo "${{ env.INSTANCE_IP }} ansible_user=ubuntu" >> ansible/inventory.ini
-
-#     - name: Install Ansible
-#       run: sudo apt-get update && sudo apt-get install -y ansible
-
-#     - name: Run Ansible Playbook
-#       uses: dawidd6/action-ansible-playbook@v2
-#       with:
-#         playbook: ansible/playbook/deploy.yml
-#         inventory: |
-#           [app]
-#           ${{ env.INSTANCE_IP }} ansible_user=ubuntu
-#         key: ${{ secrets.SSH_PRIVATE_KEY }}
-#         options: --extra-vars "openai_api_key=${{ secrets.OPENAI_API_KEY }} postgres_user=${{ secrets.POSTGRES_USER }} postgres_password=${{ secrets.POSTGRES_PASSWORD }} postgres_db=${{ secrets.POSTGRES_DB }} ngrok_auth_token=${{ secrets.NGROK_AUTH_TOKEN }} public_ip=${{ env.INSTANCE_IP }}"
-
-#   destroy:
-#     runs-on: ubuntu-latest
-#     needs: build-and-deploy
-#     if: github.event.inputs.destroy == 'true'
-
-#     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v2
-#       with:
-#         submodules: recursive
-
-#     - name: Set up Terraform
-#       uses: hashicorp/setup-terraform@v3
-
-#     - name: Download Terraform State
-#       uses: actions/download-artifact@v2
-#       with:
-#         name: terraform-state
-#         path: terraform/
-
-#     - name: Terraform Init
-#       env:
-#         TF_VAR_os_auth_url: ${{ secrets.OS_AUTH_URL }}
-#         TF_VAR_os_user_name: ${{ secrets.OS_USERNAME }}
-#         TF_VAR_os_password: ${{ secrets.OS_PASSWORD }}
-#         TF_VAR_os_region_name: ${{ secrets.OS_REGION_NAME }}
-#         TF_VAR_os_tenant_name: ${{ secrets.OS_PROJECT_NAME }}
-#         TF_VAR_os_user_domain_name: ${{ secrets.OS_USER_DOMAIN_NAME }}
-#       run: terraform init
-#       working-directory: terraform
-
-#     - name: Terraform Destroy
-#       env:
-#         TF_VAR_os_auth_url: ${{ secrets.OS_AUTH_URL }}
-#         TF_VAR_os_user_name: ${{ secrets.OS_USERNAME }}
-#         TF_VAR_os_password: ${{ secrets.OS_PASSWORD }}
-#         TF_VAR_os_region_name: ${{ secrets.OS_REGION_NAME }}
-#         TF_VAR_os_tenant_name: ${{ secrets.OS_PROJECT_NAME }}
-#         TF_VAR_os_user_domain_name: ${{ secrets.OS_USER_DOMAIN_NAME }}
-#         TF_VAR_name: "chatbot-instance"
-#         TF_VAR_public_key: ${{ secrets.PUBLIC_KEY }}
-#       run: terraform destroy -auto-approve
-#       working-directory: terraform
 name: Deploy and Manage Infomaniak Cloud Infrastructure
 
 on:
@@ -130,17 +6,14 @@ on:
       - main
   workflow_dispatch:
     inputs:
-      action:
-        description: 'Choose action: apply or destroy'
+      destroy:
+        description: 'Destroy infrastructure after deployment'
         required: true
-        default: 'apply'
-        type: choice
-        options:
-          - apply
+        default: false
+        type: boolean
 
 jobs:
   build-and-deploy:
-    if: github.event.inputs.action == 'apply'
     runs-on: ubuntu-latest
 
     steps:
@@ -205,3 +78,47 @@ jobs:
           ${{ env.INSTANCE_IP }} ansible_user=ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         options: --extra-vars "openai_api_key=${{ secrets.OPENAI_API_KEY }} postgres_user=${{ secrets.POSTGRES_USER }} postgres_password=${{ secrets.POSTGRES_PASSWORD }} postgres_db=${{ secrets.POSTGRES_DB }} ngrok_auth_token=${{ secrets.NGROK_AUTH_TOKEN }} public_ip=${{ env.INSTANCE_IP }}"
+
+  destroy:
+    runs-on: ubuntu-latest
+    needs: build-and-deploy
+    if: github.event.inputs.destroy == 'true'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    - name: Download Terraform State
+      uses: actions/download-artifact@v2
+      with:
+        name: terraform-state
+        path: terraform/
+
+    - name: Terraform Init
+      env:
+        TF_VAR_os_auth_url: ${{ secrets.OS_AUTH_URL }}
+        TF_VAR_os_user_name: ${{ secrets.OS_USERNAME }}
+        TF_VAR_os_password: ${{ secrets.OS_PASSWORD }}
+        TF_VAR_os_region_name: ${{ secrets.OS_REGION_NAME }}
+        TF_VAR_os_tenant_name: ${{ secrets.OS_PROJECT_NAME }}
+        TF_VAR_os_user_domain_name: ${{ secrets.OS_USER_DOMAIN_NAME }}
+      run: terraform init
+      working-directory: terraform
+
+    - name: Terraform Destroy
+      env:
+        TF_VAR_os_auth_url: ${{ secrets.OS_AUTH_URL }}
+        TF_VAR_os_user_name: ${{ secrets.OS_USERNAME }}
+        TF_VAR_os_password: ${{ secrets.OS_PASSWORD }}
+        TF_VAR_os_region_name: ${{ secrets.OS_REGION_NAME }}
+        TF_VAR_os_tenant_name: ${{ secrets.OS_PROJECT_NAME }}
+        TF_VAR_os_user_domain_name: ${{ secrets.OS_USER_DOMAIN_NAME }}
+        TF_VAR_name: "chatbot-instance"
+        TF_VAR_public_key: ${{ secrets.PUBLIC_KEY }}
+      run: terraform destroy -auto-approve
+      working-directory: terraform
