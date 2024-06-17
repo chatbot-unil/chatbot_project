@@ -3,7 +3,7 @@ tunnels:
   frontend:
     proto: http
     addr: http://{{ public_ip }}:{{ frontend_port }}
-    domain: {{ frontend_domain }}
+    domain: {{ domain }}
     oauth:
       provider: "{{ oauth_provider }}"
       allow_domains: [{% for domain in allow_domains %}"{{ domain }}"{% if not loop.last %}, {% endif %}{% endfor %}]
@@ -13,4 +13,4 @@ tunnels:
   backend:
     proto: http
     addr: http://{{ public_ip }}:{{ backend_port }}
-    domain: {{ backend_domain }}
+    domain: {{ domain }}
