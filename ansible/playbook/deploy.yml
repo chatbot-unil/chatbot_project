@@ -2,6 +2,8 @@
 - name: Deploy chatbot app on Infomaniak Cloud
   hosts: app
   become: true
+  vars:
+    ansible_ssh_extra_args: '-o ServerAliveInterval=50 -o ServerAliveCountMax=10'
 
   tasks:
     - name: Install Docker
@@ -106,8 +108,8 @@
     - name: Create .env file for frontend
       ansible.builtin.copy:
         content: |
-          REACT_APP_BACKEND_HOST=backend
-          REACT_APP_BACKEND_PORT=8000
+          REACT_APP_BACKEND_HOST={{ public_ip }}
+          REACT_APP_BACKEND_PORT=3001
         dest: /home/ubuntu/frontend/.env
     
     - name: Create environment file
@@ -122,8 +124,14 @@
           USE_STREAM=True
           BOT_INIT_MESSAGE=Bonjour, je suis le chatbot de l'Université de Lausanne. Comment puis-je vous aider ?
         dest: /home/ubuntu/.env
+    
+    - name: Start services with Docker Compose
+      ansible.builtin.shell:
+        cmd: "docker-compose -f /home/ubuntu/docker-compose.yml up -d --build"
+      ignore_errors: true
+      register: docker_compose_result
 
-    - name: Deploy services with Docker Compose
-      ansible.builtin.shell: docker-compose up --build -d
-      args:
-        chdir: /home/ubuntu
+    - name: Check result
+      ansible.builtin.debug:
+        msg: "Docker Compose started successfully."
+      when: docker_compose_result.rc == 0

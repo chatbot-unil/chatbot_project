@@ -56,6 +56,26 @@ resource "openstack_networking_secgroup_rule_v2" "nginx_rule_egress" {
   security_group_id = openstack_networking_secgroup_v2.chatbot_security_group.id
 }
 
+resource "openstack_networking_secgroup_rule_v2" "backend_rule_ingress" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 3001
+  port_range_max    = 3001
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = openstack_networking_secgroup_v2.chatbot_security_group.id
+}
+
+resource "openstack_networking_secgroup_rule_v2" "backend_rule_egress" {
+  direction         = "egress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 3001
+  port_range_max    = 3001
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = openstack_networking_secgroup_v2.chatbot_security_group.id
+}
+
 resource "openstack_networking_secgroup_rule_v2" "ssh_rule" {
   direction         = "ingress"
   ethertype         = "IPv4"
