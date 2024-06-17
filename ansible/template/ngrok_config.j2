@@ -1,0 +1,12 @@
+version: '2'
+tunnels:
+  {{ tunnel_name }}:
+    proto: http
+    addr: http://{{ public_ip }}:{{ addr_port }}
+    domain: {{ domain }}
+    oauth:
+      provider: "{{ oauth_provider }}"
+      allow_domains: [{% for domain in allow_domains %}"{{ domain }}"{% if not loop.last %}, {% endif %}{% endfor %}]
+      {% if allow_emails %}
+      allow_emails: [{% for email in allow_emails %}"{{ email }}"{% if not loop.last %}, {% endif %}{% endfor %}]
+      {% endif %}

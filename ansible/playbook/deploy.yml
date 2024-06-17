@@ -64,11 +64,29 @@
       ansible.builtin.copy:
         src: ../../backend
         dest: /home/ubuntu/
+    
+    - name: Create graph directory in backend
+      ansible.builtin.shell: mkdir /home/ubuntu/backend/graph
       
     - name: Copy frontend dir to remote
       ansible.builtin.copy:
         src: ../../frontend
         dest: /home/ubuntu/
+
+    - name: Create ngrok configuration
+      template:
+        src: templates/ngrok_config.j2
+        dest: /home/ubuntu/ngrok.yml
+      vars:
+        tunnel_name: "test"
+        addr_port: "80"
+        domain: "winning-famous-gnu.ngrok-free.app"
+        oauth_provider: "google"
+        allow_domains:
+          - "unisis.ch"
+        allow_emails:
+          - "denis.gremaud@gmail.com"
+        public_ip: "{{ public_ip }}"
 
     - name: Copy vectordb dir to remote
       ansible.builtin.copy:
@@ -88,8 +106,8 @@
     - name: Create .env file for frontend
       ansible.builtin.copy:
         content: |
-          REACT_APP_BACKEND_HOST={{ public_ip }}
-          REACT_APP_BACKEND_PORT=3001
+          REACT_APP_BACKEND_HOST=backend
+          REACT_APP_BACKEND_PORT=8000
         dest: /home/ubuntu/frontend/.env
     
     - name: Create environment file
@@ -106,6 +124,6 @@
         dest: /home/ubuntu/.env
 
     - name: Deploy services with Docker Compose
-      ansible.builtin.shell: docker-compose -f /home/ubuntu/docker-compose.yml up -d
+      ansible.builtin.shell: docker-compose up --build -d
       args:
         chdir: /home/ubuntu

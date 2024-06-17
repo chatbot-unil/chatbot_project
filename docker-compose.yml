@@ -4,7 +4,6 @@ services:
       file: ./vectordb/docker-compose.yml
       service: chromadb
     environment:
-      - CHROMA_HOST_ADDR=0.0.0.0
       - CHROMA_HOST_PORT=3003
     networks:
       - chatbot-network
