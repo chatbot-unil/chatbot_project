@@ -75,7 +75,7 @@
 
     - name: Create ngrok configuration
       template:
-        src: templates/ngrok_config.j2
+        src: ../template/ngrok_config.j2
         dest: /home/ubuntu/ngrok.yml
       vars:
         tunnel_name: "test"
