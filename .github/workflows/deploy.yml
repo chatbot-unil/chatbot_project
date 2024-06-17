@@ -122,7 +122,6 @@
 #         TF_VAR_public_key: ${{ secrets.PUBLIC_KEY }}
 #       run: terraform destroy -auto-approve
 #       working-directory: terraform
-
 name: Deploy and Manage Infomaniak Cloud Infrastructure
 
 on:
@@ -132,17 +131,17 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: 'Choose action: build-and-deploy or destroy'
-        required: false
-        default: build-and-deploy
+        description: 'Choose action: apply or destroy'
+        required: true
+        default: 'apply'
         type: choice
         options:
-          - build-and-deploy
+          - apply
           - destroy
 
 jobs:
   build-and-deploy:
-    if: github.event.inputs.action == 'build-and-deploy'
+    if: github.event.inputs.action == 'apply' || github.event.inputs.action == ''
     runs-on: ubuntu-latest
 
     steps:
