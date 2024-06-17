@@ -93,6 +93,13 @@ jobs:
       uses: hashicorp/setup-terraform@v3
 
     - name: Terraform Init
+      env:
+        TF_VAR_os_auth_url: ${{ secrets.OS_AUTH_URL }}
+        TF_VAR_os_user_name: ${{ secrets.OS_USERNAME }}
+        TF_VAR_os_password: ${{ secrets.OS_PASSWORD }}
+        TF_VAR_os_region_name: ${{ secrets.OS_REGION_NAME }}
+        TF_VAR_os_tenant_name: ${{ secrets.OS_PROJECT_NAME }}
+        TF_VAR_os_user_domain_name: ${{ secrets.OS_USER_DOMAIN_NAME }}
       run: terraform init
       working-directory: terraform
 
