@@ -78,7 +78,7 @@
     - name: Create ngrok configuration
       template:
         src: ../template/ngrok_config.j2
-        dest: /home/ubuntu/ngrok.yml
+        dest: /home/ubuntu/frontend/ngrok.yml
       vars:
         tunnel_name: "test"
         addr_port: "80"
