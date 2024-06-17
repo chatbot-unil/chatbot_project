@@ -137,7 +137,6 @@ on:
         type: choice
         options:
           - apply
-          - destroy
 
 jobs:
   build-and-deploy:
