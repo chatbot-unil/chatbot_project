@@ -75,21 +75,6 @@
         src: ../../frontend
         dest: /home/ubuntu/
 
-    - name: Create ngrok configuration
-      template:
-        src: ../template/ngrok_config.j2
-        dest: /home/ubuntu/frontend/ngrok.yml
-      vars:
-        domain: "winning-famous-gnu.ngrok-free.app"
-        oauth_provider: "google"
-        allow_domains:
-          - "unisis.ch"
-        allow_emails:
-          - "denis.gremaud@gmail.com"
-        public_ip: "{{ public_ip }}"
-        backend_port: 3001
-        frontend_port: 80
-
     - name: Copy vectordb dir to remote
       ansible.builtin.copy:
         src: ../../vectordb

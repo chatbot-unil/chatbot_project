@@ -65,15 +65,6 @@ services:
       - ./frontend/.env
     networks:
       - chatbot-network
-
-  ngrok:
-    extends:
-      file: ./frontend/docker-compose.yml
-      service: ngrok
-    environment:
-      - NGROK_AUTHTOKEN=${NGROK_AUTH_TOKEN}
-    networks:
-      - chatbot-network
     
 networks:
   chatbot-network:
