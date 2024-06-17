@@ -132,17 +132,17 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: 'Choose action: apply or destroy'
+        description: 'Choose action: build-and-deploy or destroy'
         required: true
-        default: 'apply'
+        default: build-and-deploy
         type: choice
         options:
-          - apply
+          - build-and-deploy
           - destroy
 
 jobs:
   build-and-deploy:
-    if: github.event.inputs.action == 'apply'
+    if: github.event.inputs.action == 'build-and-deploy'
     runs-on: ubuntu-latest
 
     steps:
