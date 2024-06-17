@@ -141,7 +141,7 @@ on:
 
 jobs:
   build-and-deploy:
-    if: github.event.inputs.action == 'apply' || github.event.inputs.action == ''
+    if: github.event.inputs.action == 'apply'
     runs-on: ubuntu-latest
 
     steps:
