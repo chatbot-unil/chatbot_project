@@ -5,6 +5,10 @@ services:
       service: chromadb
     environment:
       - CHROMA_HOST_PORT=3003
+      - IS_PERSISTENT=TRUE
+      - PERSIST_DIRECTORY=/app/data
+    volumes:
+      - ./data/chromadb:/app/data
     networks:
       - chatbot-network
     
@@ -16,6 +20,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
     networks:
       - chatbot-network
 
@@ -54,6 +60,8 @@ services:
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
       - PUBLIC_IP=${PUBLIC_IP}
+    volumes:
+      - ./data/graph:/app/graph
     networks:
       - chatbot-network
 

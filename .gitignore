@@ -4,3 +4,4 @@ ngrok.yml
 .keys/*
 PCP-GYRFT72 openrc.sh
 .vscode/*
+data/*
