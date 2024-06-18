@@ -5,7 +5,6 @@ on:
 
 jobs:
   provision-terraform:
-    if: github.event.inputs.terraform_apply == 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -55,7 +54,6 @@ jobs:
 
   ansible-deploy:
     needs: provision-terraform
-    if: github.event.inputs.ansible_deploy == 'true'
     runs-on: ubuntu-latest
 
     steps:
