@@ -5,3 +5,4 @@ ngrok.yml
 PCP-GYRFT72 openrc.sh
 .vscode/*
 data/*
+terraform/clean.sh
