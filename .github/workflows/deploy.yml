@@ -83,11 +83,11 @@ on:
     inputs:
       terraform_apply:
         description: 'Apply Terraform changes'
-        required: false
+        required: true
         default: 'false'
       terraform_destroy:
         description: 'Destroy Terraform infrastructure'
-        required: false
+        required: true
         default: 'false'
 
 jobs:
@@ -102,12 +102,6 @@ jobs:
 
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v3
-
-    - name: Download Terraform State Artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: terraform-state
-        path: terraform/
 
     - name: Terraform Init
       env:
