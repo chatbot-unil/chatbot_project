@@ -136,15 +136,16 @@ jobs:
         path: terraform/terraform.tfstate
 
     - name: Save Instance IP
+      if: github.event.inputs.terraform_apply == 'true'
       id: save_ip
       run: |
-        echo "INSTANCE_IP=$(terraform output -raw instance_ip)" >> $GITHUB_ENV
+        echo "vars.INSTANCE_IP=$(terraform output -raw instance_ip)"
       working-directory: terraform
 
     - name: Add instance IP to inventory
       run: |
         echo "[app]" > ansible/inventory.ini
-        echo "${{ env.INSTANCE_IP }} ansible_user=ubuntu" >> ansible/inventory.ini
+        echo "${{ vars.INSTANCE_IP }} ansible_user=ubuntu" >> ansible/inventory.ini
 
     - name: Install Ansible
       run: sudo apt-get update && sudo apt-get install -y ansible
@@ -155,9 +156,9 @@ jobs:
         playbook: ansible/playbook/deploy.yml
         inventory: |
           [app]
-          ${{ env.INSTANCE_IP }} ansible_user=ubuntu
+          ${{ vars.INSTANCE_IP }} ansible_user=ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        options: --extra-vars "openai_api_key=${{ secrets.OPENAI_API_KEY }} postgres_user=${{ secrets.POSTGRES_USER }} postgres_password=${{ secrets.POSTGRES_PASSWORD }} postgres_db=${{ secrets.POSTGRES_DB }} ngrok_auth_token=${{ secrets.NGROK_AUTH_TOKEN }} public_ip=${{ env.INSTANCE_IP }}"
+        options: --extra-vars "openai_api_key=${{ secrets.OPENAI_API_KEY }} postgres_user=${{ secrets.POSTGRES_USER }} postgres_password=${{ secrets.POSTGRES_PASSWORD }} postgres_db=${{ secrets.POSTGRES_DB }} ngrok_auth_token=${{ secrets.NGROK_AUTH_TOKEN }} public_ip=${{ vars.INSTANCE_IP }}"
 
   clean:
     runs-on: ubuntu-latest
@@ -198,3 +199,6 @@ jobs:
         TF_VAR_os_user_domain_name: ${{ secrets.OS_USER_DOMAIN_NAME }}
       run: terraform destroy -auto-approve
       working-directory: terraform
+
+    - name: Set Instance IP to null
+      run: vars.INSTANCE_IP=null
