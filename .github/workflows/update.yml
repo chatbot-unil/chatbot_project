@@ -18,15 +18,12 @@ jobs:
     - name: Install Ansible
       run: sudo apt-get update && sudo apt-get install -y ansible
 
-    - name: Add instance IP to inventory
-      run: |
-        echo "[app]" > ansible/inventory.ini
-        echo "${{ vars.INSTANCE_IP }} ansible_user=${{ secrets.USER }}" >> ansible/inventory.ini
-
     - name: Run Ansible Playbook
       uses: dawidd6/action-ansible-playbook@v2
       with:
         playbook: ansible/playbook/deploy.yml
-        inventory: ansible/inventory.ini
+        inventory: |
+          [app]
+          ${{ vars.INSTANCE_IP }} ansible_user=${{ secrets.USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         options: --extra-vars "openai_api_key=${{ secrets.OPENAI_API_KEY }} postgres_user=${{ secrets.POSTGRES_USER }} postgres_password=${{ secrets.POSTGRES_PASSWORD }} postgres_db=${{ secrets.POSTGRES_DB }} ngrok_auth_token=${{ secrets.NGROK_AUTH_TOKEN }} public_ip=${{ vars.INSTANCE_IP }}"
