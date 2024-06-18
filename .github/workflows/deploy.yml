@@ -108,7 +108,6 @@ jobs:
       with:
         name: terraform-state
         path: terraform/
-      if: github.event.inputs.terraform_apply == 'true'
 
     - name: Terraform Init
       env:
