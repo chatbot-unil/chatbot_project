@@ -72,7 +72,7 @@
         path: /home/ubuntu/data
         state: directory
         owner: ubuntu
-        group: ubuntu
+        group: terraform
         mode: '0755'
       
     - name: Copy frontend dir to remote

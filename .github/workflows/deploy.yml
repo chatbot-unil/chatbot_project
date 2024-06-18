@@ -134,6 +134,7 @@ jobs:
       with:
         name: terraform-state
         path: terraform/terraform.tfstate
+        retention-days: 90
 
     - name: Save Instance IP
       if: github.event.inputs.terraform_apply == 'true' || vars.INSTANCE_IP == null
