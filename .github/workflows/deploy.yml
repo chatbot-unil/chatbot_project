@@ -82,6 +82,10 @@ on:
         type: boolean
         description: 'Apply Terraform changes'
         required: true
+      ansible_deploy:
+        type: boolean
+        description: 'Deploy application with Ansible'
+        required: true
       terraform_destroy:
         type: boolean
         description: 'Destroy Terraform infrastructure'
@@ -141,6 +145,7 @@ jobs:
       working-directory: terraform
 
     - name: Add instance IP to inventory
+      if: github.event.inputs.ansible_deploy == 'true'
       run: |
         echo "[app]" > ansible/inventory.ini
         echo "${{ vars.INSTANCE_IP }} ansible_user=ubuntu" >> ansible/inventory.ini
@@ -149,6 +154,7 @@ jobs:
       run: sudo apt-get update && sudo apt-get install -y ansible
 
     - name: Run Ansible Playbook
+      if: github.event.inputs.ansible_deploy == 'true'
       uses: dawidd6/action-ansible-playbook@v2
       with:
         playbook: ansible/playbook/deploy.yml
