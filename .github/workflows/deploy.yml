@@ -115,7 +115,7 @@ jobs:
       working-directory: terraform
 
     - name: Terraform Apply
-      if: github.event.inputs.terraform_apply == 'true'
+      if: github.event.inputs.terraform_apply == 'true' || vars.INSTANCE_IP == null
       env:
         TF_VAR_os_auth_url: ${{ secrets.OS_AUTH_URL }}
         TF_VAR_os_user_name: ${{ secrets.OS_USERNAME }}
@@ -129,14 +129,14 @@ jobs:
       working-directory: terraform
 
     - name: Save Terraform State
-      if: github.event.inputs.terraform_apply == 'true'
+      if: github.event.inputs.terraform_apply == 'true' || vars.INSTANCE_IP == null
       uses: actions/upload-artifact@v2
       with:
         name: terraform-state
         path: terraform/terraform.tfstate
 
     - name: Save Instance IP
-      if: github.event.inputs.terraform_apply == 'true'
+      if: github.event.inputs.terraform_apply == 'true' || vars.INSTANCE_IP == null
       id: save_ip
       run: |
         echo "vars.INSTANCE_IP=$(terraform output -raw instance_ip)"

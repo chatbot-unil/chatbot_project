@@ -67,8 +67,13 @@
         src: ../../backend
         dest: /home/ubuntu/
     
-    - name: Create graph directory in backend
-      ansible.builtin.shell: mkdir /home/ubuntu/backend/graph
+    - name: Create data directory for persistent volumes
+      ansible.builtin.file:
+        path: /home/ubuntu/data
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: '0755'
       
     - name: Copy frontend dir to remote
       ansible.builtin.copy:
