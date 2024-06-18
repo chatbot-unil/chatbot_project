@@ -2,17 +2,6 @@ name: Provision and Deploy Application Manually
 
 on:
   workflow_dispatch:
-    inputs:
-      terraform_apply:
-        type: boolean
-        description: 'Apply Terraform changes'
-        required: true
-        default: false
-      ansible_deploy:
-        type: boolean
-        description: 'Deploy application with Ansible'
-        required: true
-        default: true
 
 jobs:
   provision-terraform:
@@ -65,6 +54,7 @@ jobs:
         retention-days: 90
 
   ansible-deploy:
+    needs: provision-terraform
     if: github.event.inputs.ansible_deploy == 'true'
     runs-on: ubuntu-latest
 
