@@ -76,9 +76,6 @@
 name: Deploy and Manage Infomaniak Cloud Infrastructure
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       terraform_apply:
