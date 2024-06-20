@@ -67,7 +67,7 @@ jobs:
         name: 'INSTANCE_IP'
         value: ${{ env.INSTANCE_IP }}
         repository: ${{ github.repository }}
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
     - name: Update DNS Record
       env:
