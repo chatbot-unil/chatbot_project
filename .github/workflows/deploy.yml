@@ -61,6 +61,15 @@ jobs:
         echo "vars.INSTANCE_IP=$(terraform output -raw instance_ip)"
       working-directory: terraform
 
+    - name: Update DNS Record
+      env:
+        USERNAME: ${{ secrets.DNS_USERNAME }}
+        PASSWORD: ${{ secrets.DNS_PASSWORD }}
+        ID: ${{ secrets.DNS_ID }}
+        IP: ${{ vars.INSTANCE_IP }}
+      run: |
+        curl -X POST "https://cp.dnsmadeeasy.com/servlet/updateip?username=${USERNAME}&password=${PASSWORD}&id=${ID}&ip=${IP}"
+
     - name: Save Terraform State
       if: github.event.inputs.terraform_apply == 'true'
       uses: actions/upload-artifact@v4
