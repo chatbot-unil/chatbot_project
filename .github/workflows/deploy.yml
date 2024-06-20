@@ -67,7 +67,7 @@ jobs:
         name: 'INSTANCE_IP'
         value: ${{ env.INSTANCE_IP }}
         repository: ${{ github.repository }}
-        token: ${{ secrets.REPO_ACCESS_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Update DNS Record
       env:
@@ -79,7 +79,6 @@ jobs:
         curl -X POST "https://cp.dnsmadeeasy.com/servlet/updateip?username=${USERNAME}&password=${PASSWORD}&id=${ID}&ip=${IP}"
 
     - name: Save Terraform State
-      if: github.event.inputs.terraform_apply == 'true'
       uses: actions/upload-artifact@v4
       with:
         name: terraform-state
