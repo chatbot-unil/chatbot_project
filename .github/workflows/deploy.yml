@@ -58,15 +58,15 @@ jobs:
     - name: Save Instance IP
       id: save_ip
       run: |
-        INSTANCE_IP=$(terraform output -raw instance_ip)
-        echo "INSTANCE_IP=$INSTANCE_IP" >> $GITHUB_ENV
+        echo "INSTANCE_IP=$(terraform output -raw instance_ip)" >> $GITHUB_ENV
+        echo "::set-output name=instance_ip::$(terraform output -raw instance_ip)"
       working-directory: terraform
     
     - name: Set Instance IP in variable
       uses: mmoyaferrer/set-github-variable@v1.0.0
       with:
         name: 'INSTANCE_IP'
-        value: ${{ env.INSTANCE_IP }}
+        value: ${{ steps.save_ip.outputs.instance_ip }}
         repository: ${{ github.repository }}
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
@@ -75,7 +75,7 @@ jobs:
         USERNAME: ${{ secrets.DNS_USERNAME }}
         PASSWORD: ${{ secrets.DNS_PASSWORD }}
         ID: ${{ secrets.DNS_ID }}
-        IP: ${{ env.INSTANCE_IP }}
+        IP: ${{ steps.save_ip.outputs.instance_ip }}
       run: |
         curl -X POST "https://cp.dnsmadeeasy.com/servlet/updateip?username=${USERNAME}&password=${PASSWORD}&id=${ID}&ip=${IP}"
 
@@ -106,6 +106,7 @@ jobs:
         playbook: ansible/playbook/deploy.yml
         inventory: |
           [app]
+          ${{ needs.provision-terraform.outputs.instance_ip }} ansible_user=${{ secrets.USER }}
           ${{ vars.INSTANCE_IP }} ansible_user=${{ secrets.USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        options: --extra-vars "openai_api_key=${{ secrets.OPENAI_API_KEY }} postgres_user=${{ secrets.POSTGRES_USER }} postgres_password=${{ secrets.POSTGRES_PASSWORD }} postgres_db=${{ secrets.POSTGRES_DB }} ngrok_auth_token=${{ secrets.NGROK_AUTH_TOKEN }} public_ip=${{ vars.INSTANCE_IP }}"
+        options: --extra-vars "openai_api_key=${{ secrets.OPENAI_API_KEY }} postgres_user=${{ secrets.POSTGRES_USER }} postgres_password=${{ secrets.POSTGRES_PASSWORD }} postgres_db=${{ secrets.POSTGRES_DB }} ngrok_auth_token=${{ secrets.NGROK_AUTH_TOKEN }} public_ip=${{ needs.provision-terraform.outputs.instance_ip }}"
