@@ -58,7 +58,7 @@ jobs:
     - name: Save Instance IP
       id: save_ip
       run: |
-        echo "vars.INSTANCE_IP=$(terraform output -raw instance_ip)"
+        vars.INSTANCE_IP=$(terraform output -raw instance_ip)
       working-directory: terraform
 
     - name: Update DNS Record
