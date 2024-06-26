@@ -111,6 +111,7 @@
           POSTGRES_DB={{ postgres_db }}
           NGROK_AUTH_TOKEN={{ ngrok_auth_token }}
           PUBLIC_IP={{ public_ip }}
+          DOMAIN_NAME={{ domain_name }}
           USE_STREAM=True
           BOT_INIT_MESSAGE=Bonjour, je suis le chatbot de l'Université de Lausanne. Comment puis-je vous aider ?
         dest: /home/ubuntu/.env

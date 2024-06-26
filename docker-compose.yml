@@ -60,6 +60,7 @@ services:
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
       - PUBLIC_IP=${PUBLIC_IP}
+      - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
       - ./data/graph:/app/graph
     networks:
