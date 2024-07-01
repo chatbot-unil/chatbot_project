@@ -115,47 +115,6 @@
           USE_STREAM=True
           BOT_INIT_MESSAGE=Bonjour, je suis le chatbot de l'Université de Lausanne. Comment puis-je vous aider ?
         dest: /home/ubuntu/.env
-    
-    - name: Create webroot directory for Certbot
-      ansible.builtin.file:
-        path: /home/ubuntu/data/certbot-webroot/.well-known/acme-challenge
-        state: directory
-        owner: www-data
-        group: www-data
-        mode: '0755'
-
-    - name: Create SSL directory
-      ansible.builtin.file:
-        path: /home/ubuntu/data/ssl
-        state: directory
-        owner: ubuntu
-        group: terraform
-        mode: '0755'
-
-    - name: Install Certbot
-      ansible.builtin.apt:
-        name: certbot
-        state: present
-
-    - name: Obtain SSL certificate
-      ansible.builtin.shell:
-        cmd: "certbot certonly --non-interactive --agree-tos --email {{ certbot_email }} --webroot -w /home/ubuntu/data/certbot-webroot -d {{ domain_name }}"
-      register: certbot_result
-      ignore_errors: true
-
-    - name: Check Certbot result
-      ansible.builtin.debug:
-        msg: "Certbot ran successfully."
-      when: certbot_result.rc == 0
-
-    - name: Copy SSL certificates to data directory
-      ansible.builtin.copy:
-        remote_src: yes
-        src: /etc/letsencrypt/live/{{ domain_name }}/
-        dest: /home/ubuntu/data/ssl/
-        owner: ubuntu
-        group: terraform
-        mode: '0755'
 
     - name: Start services with Docker Compose
       ansible.builtin.shell:
