@@ -129,7 +129,7 @@
         path: /home/ubuntu/data/ssl
         state: directory
         owner: ubuntu
-        group: ubuntu
+        group: terraform
         mode: '0755'
 
     - name: Install Certbot
@@ -154,7 +154,7 @@
         src: /etc/letsencrypt/live/{{ domain_name }}/
         dest: /home/ubuntu/data/ssl/
         owner: ubuntu
-        group: ubuntu
+        group: terraform
         mode: '0755'
 
     - name: Start services with Docker Compose
