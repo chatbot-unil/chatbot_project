@@ -116,6 +116,14 @@
           BOT_INIT_MESSAGE=Bonjour, je suis le chatbot de l'Université de Lausanne. Comment puis-je vous aider ?
         dest: /home/ubuntu/.env
     
+    - name: Create webroot directory for Certbot
+      ansible.builtin.file:
+        path: /var/www/html/.well-known/acme-challenge
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
+        
     - name: Install Certbot
       ansible.builtin.apt:
         name: certbot
