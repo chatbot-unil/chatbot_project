@@ -76,7 +76,7 @@ services:
       - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
       - ./data/ssl:/etc/nginx/ssl
-      - ~/certbot-webroot:/usr/share/nginx/html/.well-known
+      - ./data/certbot-webroot:/usr/share/nginx/html/
     networks:
       - chatbot-network
     

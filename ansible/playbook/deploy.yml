@@ -118,7 +118,7 @@
     
     - name: Create webroot directory for Certbot
       ansible.builtin.file:
-        path: /home/ubuntu/certbot-webroot/.well-known/acme-challenge
+        path: /home/ubuntu/data/certbot-webroot/.well-known/acme-challenge
         state: directory
         owner: www-data
         group: www-data
@@ -139,7 +139,7 @@
 
     - name: Obtain SSL certificate
       ansible.builtin.shell:
-        cmd: "certbot certonly --non-interactive --agree-tos --email {{ certbot_email }} --webroot -w /home/ubuntu/certbot-webroot -d {{ domain_name }}"
+        cmd: "certbot certonly --non-interactive --agree-tos --email {{ certbot_email }} --webroot -w /home/ubuntu/data/certbot-webroot -d {{ domain_name }}"
       register: certbot_result
       ignore_errors: true
 
