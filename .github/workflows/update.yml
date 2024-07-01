@@ -26,4 +26,4 @@ jobs:
           [app]
           ${{ vars.INSTANCE_IP }} ansible_user=${{ secrets.USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        options: --extra-vars "openai_api_key=${{ secrets.OPENAI_API_KEY }} postgres_user=${{ secrets.POSTGRES_USER }} postgres_password=${{ secrets.POSTGRES_PASSWORD }} postgres_db=${{ secrets.POSTGRES_DB }} ngrok_auth_token=${{ secrets.NGROK_AUTH_TOKEN }} public_ip=${{ vars.INSTANCE_IP }} domain_name=${{ secrets.DOMAIN_NAME }}"
+        options: --extra-vars "openai_api_key=${{ secrets.OPENAI_API_KEY }} postgres_user=${{ secrets.POSTGRES_USER }} postgres_password=${{ secrets.POSTGRES_PASSWORD }} postgres_db=${{ secrets.POSTGRES_DB }} ngrok_auth_token=${{ secrets.NGROK_AUTH_TOKEN }} public_ip=${{ vars.INSTANCE_IP }} domain_name=${{ secrets.DOMAIN_NAME }}  certbot_email=${{ secrets.CERTBOT_EMAIL }}"

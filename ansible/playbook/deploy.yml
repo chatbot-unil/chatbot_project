@@ -116,6 +116,30 @@
           BOT_INIT_MESSAGE=Bonjour, je suis le chatbot de l'Université de Lausanne. Comment puis-je vous aider ?
         dest: /home/ubuntu/.env
     
+    - name: Install Certbot
+      ansible.builtin.apt:
+        name: certbot
+        state: present
+
+    - name: Obtain SSL certificate
+      ansible.builtin.shell:
+        cmd: "certbot certonly --non-interactive --agree-tos --email {{ certbot_email }} --webroot -w /var/www/html -d {{ domain_name }}"
+      register: certbot_result
+      ignore_errors: true
+
+    - name: Check Certbot result
+      ansible.builtin.debug:
+        msg: "Certbot ran successfully."
+      when: certbot_result.rc == 0
+
+    - name: Copy SSL certificates to data directory
+      ansible.builtin.copy:
+        src: /etc/letsencrypt/live/{{ domain_name }}/
+        dest: /home/ubuntu/data/ssl/
+        owner: ubuntu
+        group: ubuntu
+        mode: '0755'
+
     - name: Start services with Docker Compose
       ansible.builtin.shell:
         cmd: "docker-compose -f /home/ubuntu/docker-compose.yml up -d --build"

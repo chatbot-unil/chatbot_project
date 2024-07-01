@@ -72,6 +72,10 @@ services:
       service: frontend
     env_file:
       - ./frontend/.env
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
+    volumes:
+      - ./data/ssl:/etc/nginx/ssl
     networks:
       - chatbot-network
     
