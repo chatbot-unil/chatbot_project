@@ -34,7 +34,7 @@ services:
       - CHROMADB_HOST=chromadb
       - CHROMADB_PORT=3003
       - LOGGING_LEVEL=INFO
-      - CONFIG_PATH=config.json
+      - CONFIG_PATH=configs/config.json
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
