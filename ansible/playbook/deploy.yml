@@ -101,7 +101,7 @@
           REACT_APP_BACKEND_HOST={{ domain_name }}
           GENERATE_SOURCEMAP=false
         dest: /home/ubuntu/frontend/.env
-    
+
     - name: Create environment file
       ansible.builtin.copy:
         content: |
@@ -114,7 +114,7 @@
           DOMAIN_NAME={{ domain_name }}
           USE_STREAM=True
           BOT_INIT_MESSAGE=Bonjour, je suis le chatbot de l'Université de Lausanne. Comment puis-je vous aider ?
-          ALLOWED_ORIGINS={{ cors_origins }}
+          ALLOWED_ORIGINS={{ cors_origin }}
         dest: /home/ubuntu/.env
 
     - name: Start services with Docker Compose
