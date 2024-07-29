@@ -90,7 +90,7 @@ services:
     volumes:
       - webdata:/usr/share/nginx/html
       - letsencrypt:/etc/letsencrypt
-    command: certonly --webroot --webroot-path=/usr/share/nginx/html --email denis.gremaud@gmail.com --no-eff-email --staging --agree-tos -d chatbot.unisis.ch -d www.chatbot.unisis.ch
+    command: certonly --webroot --webroot-path=/usr/share/nginx/html --email denis.gremaud@gmail.com --no-eff-email --staging --agree-tos -d chatbot.unisis.ch --keep-until-expiring
 
 volumes:
   webdata:
