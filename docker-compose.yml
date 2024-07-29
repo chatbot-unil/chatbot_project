@@ -82,4 +82,3 @@ services:
 networks:
   chatbot-network:
     driver: bridge
-
