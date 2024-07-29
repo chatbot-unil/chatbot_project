@@ -76,8 +76,24 @@ services:
       service: frontend
     env_file:
       - ./frontend/.env
+    volumes:
+      - webdata:/usr/share/nginx/html
+      - letsencrypt:/etc/letsencrypt
     networks:
       - chatbot-network
+    depends_on:
+      - certbot
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - letsencrypt:/etc/letsencrypt
+      - webdata:/usr/share/nginx/html
+    command: certonly --webroot --webroot-path=/usr/share/nginx/html --email denis.gremaud@gmail.com --no-eff-email --staging --agree-tos -d chatbot.unisis.ch -d www.chatbot.unisis.ch
+
+volumes:
+  webdata:
+  letsencrypt:
     
 networks:
   chatbot-network:
