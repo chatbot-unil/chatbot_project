@@ -92,7 +92,7 @@
 
     - name: Copy Docker Compose file
       ansible.builtin.copy:
-        src: ../../docker-compose.dev.yml
+        src: ../../docker-compose.prod.yml
         dest: /home/ubuntu/docker-compose.yml
 
     - name: Create .env file for frontend
