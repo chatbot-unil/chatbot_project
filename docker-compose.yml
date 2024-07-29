@@ -82,13 +82,14 @@ services:
     networks:
       - chatbot-network
     depends_on:
-      - certbot
+      certbot:
+        condition: service_completed_successfully
 
   certbot:
     image: certbot/certbot
     volumes:
-      - letsencrypt:/etc/letsencrypt
       - webdata:/usr/share/nginx/html
+      - letsencrypt:/etc/letsencrypt
     command: certonly --webroot --webroot-path=/usr/share/nginx/html --email denis.gremaud@gmail.com --no-eff-email --staging --agree-tos -d chatbot.unisis.ch -d www.chatbot.unisis.ch
 
 volumes:
