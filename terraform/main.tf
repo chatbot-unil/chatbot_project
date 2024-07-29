@@ -67,7 +67,7 @@ resource "openstack_networking_secgroup_rule_v2" "nginx_ssl_rule_ingress" {
 }
 
 resource "openstack_networking_secgroup_rule_v2" "nginx_ssl_rule_egress" {
-  direction         = "ingress"
+  direction         = "egress"
   ethertype         = "IPv4"
   protocol          = "tcp"
   port_range_min    = 443
