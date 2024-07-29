@@ -92,7 +92,7 @@
 
     - name: Copy Docker Compose file
       ansible.builtin.copy:
-        src: ../../docker-compose.yml
+        src: ../../docker-compose.dev.yml
         dest: /home/ubuntu/docker-compose.yml
 
     - name: Create .env file for frontend
@@ -113,8 +113,9 @@
           PUBLIC_IP={{ public_ip }}
           DOMAIN_NAME={{ domain_name }}
           USE_STREAM=True
-          BOT_INIT_MESSAGE=Bonjour, je suis le chatbot de l'Université de Lausanne. Comment puis-je vous aider ?
-          ALLOWED_ORIGINS={{ cors_origin }}
+          BOT_INIT_MESSAGE="Bonjour, je suis le chatbot de l'Université de Lausanne. Comment puis-je vous aider ?"
+          CERTBOT_EMAIL={{ certbot_email }}
+          CERTBOT_DOMAIN={{ certbot_domain }}
         dest: /home/ubuntu/.env
 
     - name: Start services with Docker Compose
