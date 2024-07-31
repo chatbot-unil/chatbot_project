@@ -93,7 +93,7 @@ services:
     volumes:
       - webdata:/usr/share/nginx/html
       - letsencrypt:/etc/letsencrypt
-    command: certonly --webroot --webroot-path=/usr/share/nginx/html --email ${CERTBOT_EMAIL} --no-eff-email --staging --agree-tos -d ${CERTBOT_DOMAIN} --force-renewal
+    command: certonly --webroot --webroot-path=/usr/share/nginx/html --email ${CERTBOT_EMAIL} --no-eff-email --agree-tos -d ${CERTBOT_DOMAIN} --force-renewal
 
 volumes:
   webdata:
