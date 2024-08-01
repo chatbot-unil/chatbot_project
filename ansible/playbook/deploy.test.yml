@@ -1,0 +1,159 @@
+---
+- name: Deploy chatbot app on Infomaniak Cloud
+  hosts: app
+  become: true
+  vars:
+    ansible_ssh_extra_args: '-o ServerAliveInterval=50 -o ServerAliveCountMax=10'
+
+  tasks:
+    - name: Install Docker
+      block:
+        - name: Add Docker's official GPG key
+          block:
+            - name: Update apt cache
+              ansible.builtin.apt:
+                update_cache: true
+
+            - name: Install necessary packages
+              ansible.builtin.apt:
+                name:
+                  - apt-transport-https
+                  - ca-certificates
+                  - curl
+                  - gnupg
+                  - lsb-release
+                  - software-properties-common
+                state: latest
+                update_cache: yes
+
+        - name: Add Docker GPG apt Key
+          ansible.builtin.apt_key:
+            url: https://download.docker.com/linux/ubuntu/gpg
+            state: present
+
+        - name: Add Docker repository
+          ansible.builtin.apt_repository:
+            repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+            state: present
+
+    - name: Install Docker Engine
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: present
+
+    - name: Download Docker Compose binary
+      get_url:
+        url: https://github.com/docker/compose/releases/download/v2.27.1/docker-compose-linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
+
+    - name: Add user to the docker group
+      ansible.builtin.user:
+        name: ubuntu
+        groups: docker
+        append: yes
+
+    - name: Start Docker service
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: yes
+      
+    - name: Copy backend dir to remote
+      ansible.builtin.copy:
+        src: ../../backend
+        dest: /home/ubuntu/
+    
+    - name: Create data directory for persistent volumes
+      ansible.builtin.file:
+        path: /home/ubuntu/data
+        state: directory
+        owner: ubuntu
+        group: terraform
+        mode: '0755'
+      
+    - name: Copy frontend dir to remote
+      ansible.builtin.copy:
+        src: ../../frontend
+        dest: /home/ubuntu/
+
+    - name: Copy vectordb dir to remote
+      ansible.builtin.copy:
+        src: ../../vectordb
+        dest: /home/ubuntu/
+
+    - name: Copy postgres dir to remote
+      ansible.builtin.copy:
+        src: ../../postgres
+        dest: /home/ubuntu/
+
+    - name: Copy Docker Compose file for production
+      ansible.builtin.copy:
+        src: ../../docker-compose.prod.yml
+        dest: /home/ubuntu/docker-compose.prod.yml
+
+    - name: Copy Docker Compose file for configuration
+      ansible.builtin.copy:
+        src: ../../docker-compose.config.yml
+        dest: /home/ubuntu/docker-compose.config.yml
+
+    - name: Create .env file for frontend
+      ansible.builtin.copy:
+        content: |
+          REACT_APP_BACKEND_HOST={{ domain_name }}
+          GENERATE_SOURCEMAP=false
+        dest: /home/ubuntu/frontend/.env
+
+    - name: Create environment file
+      ansible.builtin.copy:
+        content: |
+          OPENAI_API_KEY={{ openai_api_key }}
+          POSTGRES_USER={{ postgres_user }}
+          POSTGRES_PASSWORD={{ postgres_password }}
+          POSTGRES_DB={{ postgres_db }}
+          NGROK_AUTH_TOKEN={{ ngrok_auth_token }}
+          PUBLIC_IP={{ public_ip }}
+          DOMAIN_NAME={{ domain_name }}
+          USE_STREAM=True
+          BOT_INIT_MESSAGE="Bonjour, je suis le chatbot de l'Université de Lausanne. Comment puis-je vous aider ?"
+          CERTBOT_EMAIL={{ certbot_email }}
+          CERTBOT_DOMAIN={{ certbot_domain }}
+        dest: /home/ubuntu/.env
+
+    - name: Start SSL configuration docker-compose
+      ansible.builtin.shell:
+        cmd: "docker-compose -f /home/ubuntu/docker-compose.config.yml up -d --build"
+      ignore_errors: true
+      register: docker_compose_config_start_result
+
+    - name: Check result
+      ansible.builtin.debug:
+        msg: "Docker Compose started successfully."
+      when: docker_compose_config_start_result.rc == 0
+
+    - name: Stop SSL configuration docker-compose
+      ansible.builtin.shell:
+        cmd: "docker-compose -f /home/ubuntu/docker-compose.config.yml down"
+      ignore_errors: true
+      register: docker_compose_config_stop_result
+
+    - name: Check result
+      ansible.builtin.debug:
+        msg: "Docker Compose stopped successfully."
+      when: docker_compose_config_stop_result.rc == 0
+
+    - name: Start services with Docker Compose
+      ansible.builtin.shell:
+        cmd: "docker-compose -f /home/ubuntu/docker-compose.prod.yml up -d --build"
+      ignore_errors: true
+      register: docker_compose_result
+
+    - name: Check result
+      ansible.builtin.debug:
+        msg: "Docker Compose started successfully."
+      when: docker_compose_result.rc == 0
+    
+

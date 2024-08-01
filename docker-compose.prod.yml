@@ -84,14 +84,7 @@ services:
       - ./frontend/nginx/conf/prod.conf:/etc/nginx/conf.d/default.conf
     networks:
       - chatbot-network
-
-  # certbot:
-  #   image: certbot/certbot
-  #   volumes:
-  #     - webdata:/usr/share/nginx/html
-  #     - letsencrypt:/etc/letsencrypt
-  #   command: certonly --webroot --webroot-path=/usr/share/nginx/html --email ${CERTBOT_EMAIL} --no-eff-email --agree-tos -d ${CERTBOT_DOMAIN} --expand --force-renewal
-
+      
 volumes:
   webdata:
   letsencrypt:
