@@ -123,6 +123,12 @@
           CERTBOT_DOMAIN={{ certbot_domain }}
         dest: /home/ubuntu/.env
 
+    - name: Stop services with Docker Compose
+      ansible.builtin.shell:
+        cmd: "docker-compose -f /home/ubuntu/docker-compose.prod.yml down"
+      ignore_errors: true
+      register: docker_compose_stop_result
+
     - name: Start SSL configuration docker-compose
       ansible.builtin.shell:
         cmd: "docker-compose -f /home/ubuntu/docker-compose.config.yml up -d --build"
