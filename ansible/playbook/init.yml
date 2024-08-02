@@ -161,5 +161,13 @@
       ansible.builtin.debug:
         msg: "Docker Compose started successfully."
       when: docker_compose_result.rc == 0
+
+    - name: Install crontab for SSL certificate renewal
+      ansible.builtin.shell:
+        cmd: "crontab /home/ubuntu/crontab"
+      args:
+        executable: /bin/bash
+      ignore_errors: true
+      register: crontab_result
     
 

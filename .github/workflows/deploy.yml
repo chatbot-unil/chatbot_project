@@ -91,7 +91,7 @@ jobs:
     - name: Run Ansible Playbook
       uses: dawidd6/action-ansible-playbook@v2
       with:
-          playbook: ansible/playbook/deploy.yml
+          playbook: ansible/playbook/init.yml
           inventory: |
               [app]
               ${{ env.INSTANCE_IP }} ansible_user=${{ secrets.USER }}

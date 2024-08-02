@@ -93,7 +93,7 @@
     - name: Copy Docker Compose file
       ansible.builtin.copy:
         src: ../../docker-compose.prod.yml
-        dest: /home/ubuntu/docker-compose.yml
+        dest: /home/ubuntu/docker-compose.prod.yml
 
     - name: Create .env file for frontend
       ansible.builtin.copy:
@@ -120,7 +120,7 @@
 
     - name: Start services with Docker Compose
       ansible.builtin.shell:
-        cmd: "docker-compose -f /home/ubuntu/docker-compose.yml up -d --build"
+        cmd: "docker-compose -f /home/ubuntu/docker-compose.prod.yml up -d --build"
       ignore_errors: true
       register: docker_compose_result
 
