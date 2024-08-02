@@ -1,5 +1,5 @@
 ---
-- name: Deploy chatbot app on Infomaniak Cloud
+- name: Initialize Application Chatbot on Infomaniak Server
   hosts: app
   become: true
   vars:

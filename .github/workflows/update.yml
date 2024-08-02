@@ -3,7 +3,7 @@ name: Automatically Update Application
 on:
   push:
     branches:
-      - main 
+      - main
 
 jobs:
   ansible-deploy:
