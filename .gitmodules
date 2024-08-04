@@ -1,12 +1,16 @@
 [submodule "frontend"]
 	path = frontend
 	url = git@github.com:chatbot-unil/chatbot_frontend.git
+	branch = main
 [submodule "backend"]
 	path = backend
 	url = git@github.com:chatbot-unil/chatbot_backend.git
+	branch = main
 [submodule "vectordb"]
 	path = vectordb
 	url = git@github.com:chatbot-unil/chatbot_vector_db.git
+	branch = main
 [submodule "postgres"]
 	path = postgres
 	url = git@github.com:chatbot-unil/chatbot_database.git
+	branch = main
